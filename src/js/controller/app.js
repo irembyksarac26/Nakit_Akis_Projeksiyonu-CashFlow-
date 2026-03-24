@@ -8,6 +8,7 @@ import { renderForm } from '../view/form.js';
 import { renderTable } from '../view/tablo.js';
 import { renderChart } from '../view/grafik.js';
 import { renderCards } from '../view/kartlar.js';
+import { showHelpModal } from '../view/help.js';
 import { exportToCSV } from '../utils/export.js';
 
 // Global state
@@ -106,6 +107,10 @@ const showModal = (title, text, onConfirm, hasInput = false) => {
 };
 
 const setupGlobalEvents = () => {
+    document.getElementById('helpBtn').addEventListener('click', () => {
+        showHelpModal(showModal);
+    });
+
     // Sekmeler
     document.getElementById('tabInput').addEventListener('click', () => {
         document.getElementById('tabInput').classList.add('active');
