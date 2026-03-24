@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nakit Akışı Projeksiyonu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Nakit Akışı Projeksiyonu</h1>
+            <p>Ailenizin 40 aylık finansal geleceğini planlayın</p>
+        </div>
+    </header>
+
+    <div class="scenario-bar">
+        <div class="container flex-row">
+            <select id="scenarioSelect" class="input-field"></select>
+            <button id="saveBtn" class="btn btn-primary">💾 Kaydet</button>
+            <button id="saveAsBtn" class="btn btn-secondary">📋 Farklı Kaydet</button>
+            <button id="deleteBtn" class="btn btn-danger">🗑️ Sil</button>
+            <button id="exportBtn" class="btn btn-secondary">📤 Dışarıya Aktar</button>
+            <label for="importFile" class="btn btn-secondary">📥 Dışarıdan Al</label>
+            <input type="file" id="importFile" style="display: none;" accept=".json">
+        </div>
+    </div>
+
+    <div class="tabs">
+        <div class="container flex-row">
+            <button id="tabInput" class="tab-btn active">Veri Girişi</button>
+            <button id="tabResults" class="tab-btn">Sonuçlar</button>
+        </div>
+    </div>
+
+    <main class="container content">
+        <div id="inputSection" class="section">
+            <div class="grid-4">
+                <div class="card">
+                    <label class="label">BAŞLANGIÇ BAKİYESİ (₺)</label>
+                    <input type="text" id="startBalance" class="input-field text-right format-number" value="1.000.000">
+                </div>
+                <div class="card">
+                    <label class="label">BAŞLANGIÇ YILI</label>
+                    <input type="number" id="startYear" class="input-field" value="2026">
+                </div>
+                <div class="card">
+                    <label class="label">BAŞLANGIÇ AYI</label>
+                    <select id="startMonth" class="input-field">
+                        <option value="1">Ocak</option>
+                        <option value="2">Şubat</option>
+                        <option value="3" selected>Mart</option>
+                        <option value="4">Nisan</option>
+                        <option value="5">Mayıs</option>
+                        <option value="6">Haziran</option>
+                        <option value="7">Temmuz</option>
+                        <option value="8">Ağustos</option>
+                        <option value="9">Eylül</option>
+                        <option value="10">Ekim</option>
+                        <option value="11">Kasım</option>
+                        <option value="12">Aralık</option>
+                    </select>
+                </div>
+                <div class="card">
+                    <label class="label">PROJEKSİYON SÜRESİ (AY)</label>
+                    <input type="number" id="duration" class="input-field" value="40">
+                </div>
+            </div>
+
+            <div class="card mt-12">
+                <label class="label">FAİZ AYARLARI</label>
+                <div class="grid-4">
+                    <div>
+                        <label class="label">YILLIK FAİZ (%)</label>
+                        <input type="number" step="0.1" id="interestRate" class="input-field" value="37">
+                    </div>
+                    <div>
+                        <label class="label">2 AYDA DÜŞÜŞ (PUAN)</label>
+                        <input type="number" step="0.1" id="interestDrop" class="input-field" value="1.5">
+                    </div>
+                    <div>
+                        <label class="label">MİNİMUM FAİZ (%)</label>
+                        <input type="number" step="0.1" id="minInterest" class="input-field" value="15">
+                    </div>
+                    <div>
+                        <label class="label">STOPAJ ORANI (%)</label>
+                        <input type="number" step="0.1" id="taxRate" class="input-field" value="20">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-12">
+                <div class="flex-row justify-between mb-8">
+                    <label class="label">SABİT GELİRLER</label>
+                </div>
+                <div class="table-container">
+                    <table class="input-table" id="incomeTable">
+                        <thead>
+                            <tr>
+                                <th>Ad</th>
+                                <th class="text-right">Tutar (₺)</th>
+                                <th class="text-right">Artış %</th>
+                                <th>Aktif Aylar</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <button id="addIncome" class="btn btn-add">+ Gelir Ekle</button>
+                </div>
+            </div>
+
+            <div class="card mt-12">
+                <div class="flex-row justify-between mb-8">
+                    <label class="label">SABİT GİDERLER</label>
+                </div>
+                <div class="table-container">
+                    <table class="input-table" id="expenseTable">
+                        <thead>
+                            <tr>
+                                <th>Ad</th>
+                                <th class="text-right">Tutar (₺)</th>
+                                <th class="text-right">Artış %</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <button id="addExpense" class="btn btn-add">+ Gider Ekle</button>
+                </div>
+            </div>
+
+            <div class="card mt-12">
+                <div class="flex-row justify-between mb-8">
+                    <label class="label">DÖNEMSEL GİDERLER</label>
+                </div>
+                <div class="table-container">
+                    <table class="input-table" id="periodicTable">
+                        <thead>
+                            <tr>
+                                <th>Ad</th>
+                                <th class="text-right">Taksit (₺)</th>
+                                <th class="text-right">Adet</th>
+                                <th>Başl. Ay</th>
+                                <th class="text-right">Artış %</th>
+                                <th>Tekrar?</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <button id="addPeriodic" class="btn btn-add">+ Dönemsel Ekle</button>
+                </div>
+            </div>
+
+            <div class="card mt-12">
+                <div class="flex-row justify-between mb-8">
+                    <label class="label">YILLIK GİDERLER</label>
+                </div>
+                <div class="table-container">
+                    <table class="input-table" id="annualTable">
+                        <thead>
+                            <tr>
+                                <th>Ad</th>
+                                <th class="text-right">Tutar (₺)</th>
+                                <th>Ay</th>
+                                <th class="text-right">Artış %</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <button id="addAnnual" class="btn btn-add">+ Yıllık Ekle</button>
+                </div>
+            </div>
+
+            <div class="flex-row justify-center mt-24 gap-12">
+                <button id="loadDemoBtn" class="btn btn-secondary">📥 Demo Yükle</button>
+                <button id="clearAllBtn" class="btn btn-danger">🗑️ Tüm Verileri Sil</button>
+                <button id="goToResultsBtn" class="btn btn-primary">📊 Sonuçlar</button>
+            </div>
+        </div>
+
+        <div id="resultsSection" class="section hidden">
+            <div class="grid-4" id="summaryCards">
+                <!-- Özet kartları buraya gelecek -->
+            </div>
+
+            <div class="card mt-12 overflow-x">
+                <div id="chartContainer" class="chart-container">
+                    <!-- SVG Grafik buraya gelecek -->
+                </div>
+                <div id="chartLegend" class="flex-row justify-center gap-24 mt-8"></div>
+            </div>
+
+            <div class="card mt-12 overflow-x">
+                <table class="results-table" id="resultsTable">
+                    <thead><!-- Başlıklar dinamik --></thead>
+                    <tbody><!-- Veriler dinamik --></tbody>
+                </table>
+            </div>
+
+            <div class="flex-row justify-center mt-24 gap-12">
+                <button id="goToInputBtn" class="btn btn-secondary">⚙️ Verileri Düzenle</button>
+                <button id="exportExcelBtn" class="btn btn-primary">📥 Excel'e Aktar</button>
+            </div>
+        </div>
+    </main>
+
+    <div class="external-tools">
+        <div class="container grid-2">
+            <a href="https://chatgpt.com/g/g-WqrpxrYm4-budget-analyzer" target="_blank" class="tool-btn">
+                📊 Bütçe Analizi (ChatGPT)
+            </a>
+            <a href="https://chatgpt.com/g/g-68a9f4bcd0dc8191a18d0052788da5e0-bank-interest-bank-charges-cb-24-25" target="_blank" class="tool-btn">
+                🏦 Banka Faiz Oranları
+            </a>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modalOverlay" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3 id="modalTitle">Başlık</h3>
+            <p id="modalText">Mesaj</p>
+            <div id="modalInputContainer" class="hidden">
+                <input type="text" id="modalInput" class="input-field w-full mt-8">
+            </div>
+            <div class="flex-row justify-end gap-12 mt-24">
+                <button id="modalCancel" class="btn btn-secondary">İptal</button>
+                <button id="modalConfirm" class="btn btn-primary">Onayla</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner -->
+    <div id="banner" class="banner hidden"></div>
+
+    <script type="module" src="src/js/controller/app.js"></script>
+</body>
+</html>
